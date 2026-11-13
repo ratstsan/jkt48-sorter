@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JKT48 Lineup & Age Comparator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="jkt-header">
+    <div class="header-bg-pattern"></div>
+    <div class="container header-content">
+      <div class="brand-badge">JKT48 NEW ERA • LINEUP & PROFILE ANALYZER</div>
+      <h1>JKT48 <span>Height & Age</span> Lineup</h1>
+      <p>Bandingkan tinggi badan member secara proporsional di atas panggung penggaris dan cek usia presisi hingga tahun, bulan, dan hari.</p>
+      
+      <div class="stats-bar" id="statsBar">
+        <div class="stat-pill">
+          <span class="stat-label">Ditampilkan</span>
+          <span class="stat-value" id="statCount">58 Member</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Rata-rata Tinggi</span>
+          <span class="stat-value" id="statAvgHeight">- cm</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Tertinggi / Terpendek</span>
+          <span class="stat-value" id="statMinMaxHeight">-</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-label">Rata-rata Usia</span>
+          <span class="stat-value" id="statAvgAge">-</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-wrapper">
+    <!-- Control & Filter Panel -->
+    <section class="control-panel">
+      <div class="control-row">
+        <div class="control-group search-group">
+          <label for="searchInput">Cari Nama / Panggilan</label>
+          <input type="text" id="searchInput" placeholder="Contoh: Christy, Freya, Feni..." />
+        </div>
+
+        <div class="control-group">
+          <label for="sortSelect">Urutkan Berdasarkan</label>
+          <select id="sortSelect">
+            <option value="height-desc">Tinggi Badan: Tertinggi → Terpendek</option>
+            <option value="height-asc">Tinggi Badan: Terpendek → Tertinggi</option>
+            <option value="age-desc">Umur: Tertua → Termuda</option>
+            <option value="age-asc">Umur: Termuda → Tertua</option>
+            <option value="gen-asc">Generasi: Senior → Junior</option>
+            <option value="gen-desc">Generasi: Junior → Senior</option>
+            <option value="name-asc">Nama Panggilan: A → Z</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="teamFilter">Team / Status</label>
+          <select id="teamFilter">
+            <option value="ALL">Semua Team & Trainee</option>
+            <option value="Love">Team Love</option>
+            <option value="Dream">Team Dream</option>
+            <option value="Passion">Team Passion</option>
+            <option value="Trainee">Trainee</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="genFilter">Generasi</label>
+          <select id="genFilter">
+            <option value="ALL">Semua Generasi</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="zodiacFilter">Zodiak</label>
+          <select id="zodiacFilter">
+            <option value="ALL">Semua Zodiak</option>
+            <option value="Aries">♈ Aries (21 Mar - 19 Apr)</option>
+            <option value="Taurus">♉ Taurus (20 Apr - 20 Mei)</option>
+            <option value="Gemini">♊ Gemini (21 Mei - 20 Jun)</option>
+            <option value="Cancer">♋ Cancer (21 Jun - 22 Jul)</option>
+            <option value="Leo">♌ Leo (23 Jul - 22 Agu)</option>
+            <option value="Virgo">♍ Virgo (23 Agu - 22 Sep)</option>
+            <option value="Libra">♎ Libra (23 Sep - 22 Okt)</option>
+            <option value="Scorpio">♏ Scorpio (23 Okt - 21 Nov)</option>
+            <option value="Sagitarius">♐ Sagitarius (22 Nov - 21 Des)</option>
+            <option value="Capricorn">♑ Capricorn (22 Des - 19 Jan)</option>
+            <option value="Aquarius">♒ Aquarius (20 Jan - 18 Feb)</option>
+            <option value="Pisces">♓ Pisces (19 Feb - 20 Mar)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="control-footer">
+        <div class="view-tabs">
+          <button class="tab-btn active" data-view="ruler" id="btnViewRuler">📏 Lineup Penggaris Tinggi</button>
+          <button class="tab-btn" data-view="cards" id="btnViewCards">🎂 Kartu Detail & Umur Presisi</button>
+        </div>
+
+        <div class="ruler-options" id="rulerOptions">
+          <label class="toggle-label">
+            <input type="checkbox" id="toggleGuideLines" checked />
+            <span>Garis Bantu Tinggi</span>
+          </label>
+          <label class="toggle-label">
+            <input type="checkbox" id="toggleCompareSelect" />
+            <span>Mode Pilih Member (<span id="selectedCount">0</span>)</span>
+          </label>
+          <button class="btn-reset" id="btnResetFilters">Reset Filter</button>
+        </div>
+      </div>
+
+      <!-- Multi-Select Picker Bar -->
+      <div class="picker-drawer hidden" id="pickerDrawer">
+        <div class="picker-header">
+          <span>Pilih beberapa member untuk dibandingkan berdampingan:</span>
+          <button class="btn-clear-selection" id="btnClearSelection">Hapus Pilihan</button>
+        </div>
+        <div class="picker-chips" id="pickerChips"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 1: HEIGHT RULER STAGE -->
+    <section class="ruler-stage-wrapper" id="rulerView">
+      <div class="stage-legend">
+        <span class="legend-item"><i class="dot love"></i> Love</span>
+        <span class="legend-item"><i class="dot dream"></i> Dream</span>
+        <span class="legend-item"><i class="dot passion"></i> Passion</span>
+        <span class="legend-item"><i class="dot trainee"></i> Trainee</span>
+        <span class="legend-tip">💡 Klik foto member untuk melihat detail umur presisi & biodata</span>
+      </div>
+
+      <div class="ruler-viewport">
+        <!-- Fixed Left Ruler -->
+        <div class="ruler-axis" id="rulerAxis"></div>
+        
+        <!-- Horizontal Scrollable Lineup -->
+        <div class="lineup-scroll-area" id="lineupScrollArea">
+          <div class="ruler-grid-lines" id="rulerGridLines"></div>
+          <div class="lineup-container" id="lineupContainer"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: PRECISION AGE & PROFILE CARDS -->
+    <section class="cards-view hidden" id="cardsView">
+      <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+  </main>
+
+  <!-- Member Detail Modal -->
+  <div class="modal-backdrop hidden" id="memberModal">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <footer class="jkt-footer">
+    <div class="container">
+      <p>JKT48 Member Height & Precision Age Comparator • Fanmade Visualization</p>
+      <p class="footer-sub">Perhitungan umur diperbarui otomatis secara real-time berdasarkan tanggal hari ini.</p>
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
